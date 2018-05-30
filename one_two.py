@@ -8,7 +8,7 @@ from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from utils import convert
 
 root_path = os.path.dirname(os.path.abspath(__file__))
-
+empty_path = os.path.join(root_path, 'files/empty.docx')
 
 def read_xls(file_path):
     df = pd.read_excel(file_path)
@@ -81,18 +81,17 @@ def write_word_info(template, dst_path, data_dict, prefix='A3', start=1):
         p_header = dc.add_paragraph('信息表', header.style)
         p_header.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
         p_header.runs[0].font.size = Pt(26)
-        p_header.runs[0].font.name = 'Times'
+        p_header.runs[0].font.name = '宋体'
         p_header.runs[0].font.bold = True
 
 
         p_number = dc.add_paragraph('编号：' + no, number.style)
-        p_number.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+        p_number.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
         p_number.runs[0].font.size = Pt(16)
-        p_number.runs[0].font.name = 'Times(宋体)'
-        p_number.runs[0].font.bold = True
+        p_number.runs[0].font.name = '宋体'
 
         tb = dc.add_table(rows=rows, cols=cols, style=style)
-        tb.style.font.size = Pt(14)
+        tb.autofit = False
         tb.cell(0, 0).text = table_1.cell(0, 0).text
         tb.cell(0, 1).text = name
         tb.cell(0, 2).text = table_1.cell(0, 2).text
@@ -114,11 +113,18 @@ def write_word_info(template, dst_path, data_dict, prefix='A3', start=1):
             tb.cell(idx, 1).text = table_1.cell(idx, 1).text
             tb.cell(idx, 1).merge(tb.cell(idx, 2))
             tb.cell(idx, 1).merge(tb.cell(idx, 3))
-        for _ in range(0, 14):
+        for row in tb.rows:
+            for cell in row.cells:
+                ps = cell.paragraphs
+                for p in ps:
+                    for run in p.runs:
+                        font = run.font
+                        font.size = Pt(14)
+                        font.name = '宋体'
+        for _ in range(0, 16):
             dc.add_paragraph(blank.text, blank.style)
 
     dc.save(dst_path)
-    pass
 
 
 if __name__ == '__main__':
