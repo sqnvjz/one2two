@@ -135,9 +135,9 @@ if __name__ == '__main__':
     data_dict = df.to_dict('records')
 
     tp_dict = read_template_nl(os.path.join(root_path, 'files/namelist.docx'))
-    write_word_nl(tp_dict, os.path.join(root_path, 'dist/namelist_out.docx'), data_dict)
+    write_word_nl(tp_dict, os.path.join(root_path, 'dst/namelist_out.docx'), data_dict)
 
     tp_dict = read_template_info(os.path.join(root_path, 'files/info.docx'))
-    write_word_info(tp_dict, os.path.join(root_path, 'dist/info_out.docx'), data_dict, prefix, start)
+    write_word_info(tp_dict, os.path.join(root_path, 'dst/info_out.docx'), data_dict, prefix, start)
 
     print('end')
