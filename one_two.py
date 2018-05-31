@@ -1,8 +1,9 @@
 import os
 import pandas as pd
+from copy import deepcopy
 
 from docx import Document
-from docx.shared import Pt
+from docx.shared import Pt, Inches
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 
 from utils import convert
@@ -121,11 +122,22 @@ def write_word_info(template, dst_path, data_dict, prefix='A3', start=1):
                         font = run.font
                         font.size = Pt(14)
                         font.name = '宋体'
+        # for row in tb.rows:
+        #     for idx in range(4):
+        #         row.cells[idx].width = Inches(5)
         for _ in range(0, 16):
             dc.add_paragraph(blank.text, blank.style)
 
     dc.save(dst_path)
 
+def write_test(template, dst_path):
+    dc = Document()
+    table_1 = template['table_1']
+    for i in range(10):
+        new_tbl = deepcopy(table_1._tbl)
+        p = dc.add_paragraph()
+        p._p.addnext(new_tbl)
+    dc.save(dst_path)
 
 if __name__ == '__main__':
     # print('启动文件转换程序...')
@@ -140,10 +152,13 @@ if __name__ == '__main__':
     df = read_xls(os.path.join(root_path, 'files/source.xlsx'))
     data_dict = df.to_dict('records')
 
-    tp_dict = read_template_nl(os.path.join(root_path, 'files/namelist.docx'))
-    write_word_nl(tp_dict, os.path.join(root_path, 'dst/namelist_out.docx'), data_dict)
 
+    # tp_dict = read_template_nl(os.path.join(root_path, 'files/namelist.docx'))
+    # write_word_nl(tp_dict, os.path.join(root_path, 'dst/namelist_out.docx'), data_dict)
+    #
     tp_dict = read_template_info(os.path.join(root_path, 'files/info.docx'))
-    write_word_info(tp_dict, os.path.join(root_path, 'dst/info_out.docx'), data_dict, prefix, start)
+
+    write_test(tp_dict, os.path.join(root_path, 'dst/test_out.docx'))
+    # write_word_info(tp_dict, os.path.join(root_path, 'dst/info_out.docx'), data_dict, prefix, start)
 
     print('end')
